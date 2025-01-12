@@ -3,7 +3,7 @@ version: '3.8'
 services:
   front:
     build:
-      context: ./soa-lab-3-front
+      context: ./soa-lab-4-front
     ports:
       - "3000:3000"
     depends_on:
@@ -24,7 +24,7 @@ services:
 
   main-service:
     build:
-      context: ./soa-lab-3-back/main-service
+      context: ./soa-lab-4-back/main-service
     ports:
       - "1111:1111"
     environment:
@@ -41,7 +41,7 @@ services:
 
   grammy-service:
     build:
-      context: ./soa-lab-3-back/grammy-service
+      context: ./soa-lab-4-back/grammy-service
     ports:
       - "1112:1112"
     environment:

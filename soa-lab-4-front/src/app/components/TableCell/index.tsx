@@ -1,7 +1,7 @@
 'use client'
 
 import styles from './styles.module.css';
-import {PropsWithChildren, useState, useEffect, useRef} from "react";
+import {PropsWithChildren, useState, useRef} from "react";
 import {Sort} from "@/app/components/Sort";
 import {Property} from "@/app/types/property";
 
