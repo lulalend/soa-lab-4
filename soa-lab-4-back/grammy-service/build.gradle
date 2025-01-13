@@ -3,6 +3,7 @@ plugins {
     id 'war'
     id 'org.springframework.boot' version '3.3.4'
     id 'io.spring.dependency-management' version '1.1.6'
+    id "com.github.bjornvester.wsdl2java" version "2.0.2"
 }
 
 group = 'ru.itmo.soa'
@@ -41,8 +42,28 @@ dependencies {
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation 'org.springframework.ws:spring-ws-core:4.0.11'
+    implementation 'org.apache.cxf:cxf-spring-boot-starter-jaxws:4.0.5'
+
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+wsdl2java {
+    cxfVersion = "4.0.5"
+    includes = ['src/main/resources/wsdl/*.wsdl']
+}
+
+jar {
+    doFirst {
+        manifest {
+            attributes(
+                    'Class-Path': configurations.compile.collect { it.toURI().toString() }.join(' '),
+                    'Main-Class': 'ru.itmo.soa.grammyservice'
+            )
+        }
+    }
 }

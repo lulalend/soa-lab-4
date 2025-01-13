@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema"
+             xmlns:tns="http://itmo.ru/grammy"
+             targetNamespace="http://itmo.ru/grammy"
+             name="GrammyService">
+
+    <!-- Типы данных -->
+    <types>
+        <xs:schema targetNamespace="http://itmo.ru/grammy">
+            <!-- AddSingle -->
+            <xs:element name="AddSingleRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="bandId" type="xs:long"/>
+                        <xs:element name="single">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="id" type="xs:long"/>
+                                    <xs:element name="name" type="xs:string"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="AddSingleResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="band">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="id" type="xs:long"/>
+                                    <xs:element name="name" type="xs:string"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <!-- ChangeSingle -->
+            <xs:element name="ChangeSingleRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="bandId" type="xs:long"/>
+                        <xs:element name="singleId" type="xs:long"/>
+                        <xs:element name="single">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="id" type="xs:long"/>
+                                    <xs:element name="name" type="xs:string"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="ChangeSingleResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="single">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="id" type="xs:long"/>
+                                    <xs:element name="name" type="xs:string"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <!-- AddParticipant -->
+            <xs:element name="AddParticipantRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="bandId" type="xs:long"/>
+                        <xs:element name="participant">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="id" type="xs:long"/>
+                                    <xs:element name="name" type="xs:string"/>
+                                    <xs:element name="passportID" type="xs:string"/>
+                                    <xs:element name="birthday" type="xs:date"/>
+                                    <xs:element name="location">
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element name="id" type="xs:long"/>
+                                                <xs:element name="x" type="xs:float"/>
+                                                <xs:element name="y" type="xs:float"/>
+                                                <xs:element name="z" type="xs:int"/>
+                                                <xs:element name="name" type="xs:string"/>
+                                            </xs:sequence>
+                                        </xs:complexType>
+                                    </xs:element>
+                                    <xs:element name="bandID" type="xs:long"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="AddParticipantResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="person">
+                            <xs:complexType>
+                                <xs:sequence>
+                                    <xs:element name="id" type="xs:long"/>
+                                    <xs:element name="name" type="xs:string"/>
+                                    <xs:element name="passportID" type="xs:string"/>
+                                    <xs:element name="birthday" type="xs:date"/>
+                                    <xs:element name="location">
+                                        <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element name="id" type="xs:long"/>
+                                                <xs:element name="x" type="xs:float"/>
+                                                <xs:element name="y" type="xs:float"/>
+                                                <xs:element name="z" type="xs:int"/>
+                                                <xs:element name="name" type="xs:string"/>
+                                            </xs:sequence>
+                                        </xs:complexType>
+                                    </xs:element>
+                                    <xs:element name="bandID" type="xs:long"/>
+                                </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:schema>
+    </types>
+
+    <!-- Порт типа -->
+    <portType name="GrammyPortType">
+        <operation name="AddSingle">
+            <input message="tns:AddSingleRequest"/>
+            <output message="tns:AddSingleResponse"/>
+        </operation>
+        <operation name="ChangeSingle">
+            <input message="tns:ChangeSingleRequest"/>
+            <output message="tns:ChangeSingleResponse"/>
+        </operation>
+        <operation name="AddParticipant">
+            <input message="tns:AddParticipantRequest"/>
+            <output message="tns:AddParticipantResponse"/>
+        </operation>
+    </portType>
+
+    <!-- Привязка -->
+    <binding name="GrammyBinding" type="tns:GrammyPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="AddSingle">
+            <soap:operation soapAction="http://itmo.ru/grammy/AddSingle"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="ChangeSingle">
+            <soap:operation soapAction="http://itmo.ru/grammy/ChangeSingle"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="AddParticipant">
+            <soap:operation soapAction="http://itmo.ru/grammy/AddParticipant"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+
+    <!-- Сервис -->
+    <service name="GrammyService">
+        <port name="GrammyPort" binding="tns:GrammyBinding">
+            <soap:address location="http://localhost:8080/ws/grammy"/>
+        </port>
+    </service>
+</definitions>

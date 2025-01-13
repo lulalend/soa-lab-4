@@ -13,7 +13,6 @@ import ru.itmo.soa.grammyservice.model.Single;
 @RestController
 @RequestMapping("/api/v1/grammy")
 public class GrammyController {
-    @Autowired
     private final RestTemplate restTemplate;
 
     @Autowired
