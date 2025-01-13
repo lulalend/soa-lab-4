@@ -136,7 +136,6 @@
         </xs:schema>
     </types>
 
-    <!-- Порт типа -->
     <portType name="GrammyPortType">
         <operation name="AddSingle">
             <input message="tns:AddSingleRequest"/>
@@ -152,7 +151,6 @@
         </operation>
     </portType>
 
-    <!-- Привязка -->
     <binding name="GrammyBinding" type="tns:GrammyPortType">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
         <operation name="AddSingle">
@@ -184,7 +182,6 @@
         </operation>
     </binding>
 
-    <!-- Сервис -->
     <service name="GrammyService">
         <port name="GrammyPort" binding="tns:GrammyBinding">
             <soap:address location="http://localhost:8080/ws/grammy"/>
