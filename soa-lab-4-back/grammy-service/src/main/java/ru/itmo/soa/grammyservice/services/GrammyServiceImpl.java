@@ -12,7 +12,7 @@ import ru.itmo.soa.grammyservice.model.Band;
 import ru.itmo.soa.grammyservice.model.Person;
 import ru.itmo.soa.grammyservice.model.Single;
 
-@WebService(serviceName = "GrammyService", targetNamespace = "http://example.com/grammy")
+@WebService(serviceName = "GrammyService", targetNamespace = "http://itmo.ru/grammy")
 public class GrammyServiceImpl {
     private final RestTemplate restTemplate;
 
