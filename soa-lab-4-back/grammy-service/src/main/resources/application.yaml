@@ -1,6 +1,7 @@
 server:
-  port: 1112
+  port: 8080
   ssl:
+#    enabled: false
     enabled: true
     key-store: classpath:static/server.keystore.p12
     key-store-password: DashaYana
@@ -11,3 +12,8 @@ trust:
   store:
     url: classpath:static/server.keystore.p12
     password: DashaYana
+
+spring:
+  ws:
+    wsdl:
+      location: /ws/grammy?wsdl

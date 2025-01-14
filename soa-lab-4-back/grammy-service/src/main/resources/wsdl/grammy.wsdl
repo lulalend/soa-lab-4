@@ -1,190 +1,172 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
-             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-             xmlns:xs="http://www.w3.org/2001/XMLSchema"
-             xmlns:tns="http://itmo.ru/grammy"
-             targetNamespace="http://itmo.ru/grammy"
-             name="GrammyService">
-
-    <!-- Типы данных -->
-    <types>
-        <xs:schema targetNamespace="http://itmo.ru/grammy">
-            <!-- AddSingle -->
-            <xs:element name="AddSingleRequest">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="bandId" type="xs:long"/>
-                        <xs:element name="single">
-                            <xs:complexType>
-                                <xs:sequence>
-                                    <xs:element name="id" type="xs:long"/>
-                                    <xs:element name="name" type="xs:string"/>
-                                </xs:sequence>
-                            </xs:complexType>
-                        </xs:element>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-
-            <xs:element name="AddSingleResponse">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="band">
-                            <xs:complexType>
-                                <xs:sequence>
-                                    <xs:element name="id" type="xs:long"/>
-                                    <xs:element name="name" type="xs:string"/>
-                                </xs:sequence>
-                            </xs:complexType>
-                        </xs:element>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-
-            <!-- ChangeSingle -->
-            <xs:element name="ChangeSingleRequest">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="bandId" type="xs:long"/>
-                        <xs:element name="singleId" type="xs:long"/>
-                        <xs:element name="single">
-                            <xs:complexType>
-                                <xs:sequence>
-                                    <xs:element name="id" type="xs:long"/>
-                                    <xs:element name="name" type="xs:string"/>
-                                </xs:sequence>
-                            </xs:complexType>
-                        </xs:element>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-
-            <xs:element name="ChangeSingleResponse">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="single">
-                            <xs:complexType>
-                                <xs:sequence>
-                                    <xs:element name="id" type="xs:long"/>
-                                    <xs:element name="name" type="xs:string"/>
-                                </xs:sequence>
-                            </xs:complexType>
-                        </xs:element>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-
-            <!-- AddParticipant -->
-            <xs:element name="AddParticipantRequest">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="bandId" type="xs:long"/>
-                        <xs:element name="participant">
-                            <xs:complexType>
-                                <xs:sequence>
-                                    <xs:element name="id" type="xs:long"/>
-                                    <xs:element name="name" type="xs:string"/>
-                                    <xs:element name="passportID" type="xs:string"/>
-                                    <xs:element name="birthday" type="xs:date"/>
-                                    <xs:element name="location">
-                                        <xs:complexType>
-                                            <xs:sequence>
-                                                <xs:element name="id" type="xs:long"/>
-                                                <xs:element name="x" type="xs:float"/>
-                                                <xs:element name="y" type="xs:float"/>
-                                                <xs:element name="z" type="xs:int"/>
-                                                <xs:element name="name" type="xs:string"/>
-                                            </xs:sequence>
-                                        </xs:complexType>
-                                    </xs:element>
-                                    <xs:element name="bandID" type="xs:long"/>
-                                </xs:sequence>
-                            </xs:complexType>
-                        </xs:element>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
-
-            <xs:element name="AddParticipantResponse">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="person">
-                            <xs:complexType>
-                                <xs:sequence>
-                                    <xs:element name="id" type="xs:long"/>
-                                    <xs:element name="name" type="xs:string"/>
-                                    <xs:element name="passportID" type="xs:string"/>
-                                    <xs:element name="birthday" type="xs:date"/>
-                                    <xs:element name="location">
-                                        <xs:complexType>
-                                            <xs:sequence>
-                                                <xs:element name="id" type="xs:long"/>
-                                                <xs:element name="x" type="xs:float"/>
-                                                <xs:element name="y" type="xs:float"/>
-                                                <xs:element name="z" type="xs:int"/>
-                                                <xs:element name="name" type="xs:string"/>
-                                            </xs:sequence>
-                                        </xs:complexType>
-                                    </xs:element>
-                                    <xs:element name="bandID" type="xs:long"/>
-                                </xs:sequence>
-                            </xs:complexType>
-                        </xs:element>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://services.grammyservice.soa.itmo.ru/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="GrammyService" targetNamespace="http://services.grammyservice.soa.itmo.ru/">
+    <wsdl:types>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://services.grammyservice.soa.itmo.ru/" elementFormDefault="unqualified" targetNamespace="http://services.grammyservice.soa.itmo.ru/" version="1.0">
+            <xs:element name="addParticipant" type="tns:addParticipant"/>
+            <xs:element name="addParticipantResponse" type="tns:addParticipantResponse"/>
+            <xs:element name="addSingle" type="tns:addSingle"/>
+            <xs:element name="addSingleResponse" type="tns:addSingleResponse"/>
+            <xs:element name="changeSingle" type="tns:changeSingle"/>
+            <xs:element name="changeSingleResponse" type="tns:changeSingleResponse"/>
+            <xs:complexType name="addParticipant">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="bandId" type="xs:long"/>
+                    <xs:element minOccurs="0" name="participant" type="tns:person"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="person">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="bandID" type="xs:long"/>
+                    <xs:element minOccurs="0" name="birthday" type="tns:localDate"/>
+                    <xs:element minOccurs="0" name="id" type="xs:long"/>
+                    <xs:element minOccurs="0" name="location" type="tns:location"/>
+                    <xs:element minOccurs="0" name="name" type="xs:string"/>
+                    <xs:element minOccurs="0" name="passportID" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType final="extension restriction" name="localDate">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="location">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="id" type="xs:long"/>
+                    <xs:element minOccurs="0" name="name" type="xs:string"/>
+                    <xs:element minOccurs="0" name="x" type="xs:float"/>
+                    <xs:element name="y" type="xs:float"/>
+                    <xs:element name="z" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="addParticipantResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="return" type="tns:person"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="changeSingle">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="bandId" type="xs:long"/>
+                    <xs:element minOccurs="0" name="singleId" type="xs:long"/>
+                    <xs:element minOccurs="0" name="single" type="tns:single"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="single">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="id" type="xs:long"/>
+                    <xs:element minOccurs="0" name="name" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="changeSingleResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="return" type="tns:single"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="addSingle">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="bandId" type="xs:long"/>
+                    <xs:element minOccurs="0" name="single" type="tns:single"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="addSingleResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="return" type="tns:band"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="band">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="coordinates" type="tns:coordinates"/>
+                    <xs:element minOccurs="0" name="creationDate" type="tns:localDateTime"/>
+                    <xs:element minOccurs="0" name="description" type="xs:string"/>
+                    <xs:element minOccurs="0" name="frontMan" type="tns:person"/>
+                    <xs:element minOccurs="0" name="genre" type="tns:musicGenre"/>
+                    <xs:element minOccurs="0" name="id" type="xs:long"/>
+                    <xs:element minOccurs="0" name="name" type="xs:string"/>
+                    <xs:element minOccurs="0" name="numberOfParticipants" type="xs:int"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="singles" nillable="true" type="tns:single"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="coordinates">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="id" type="xs:long"/>
+                    <xs:element minOccurs="0" name="x" type="xs:long"/>
+                    <xs:element minOccurs="0" name="y" type="xs:double"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType final="extension restriction" name="localDateTime">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:simpleType name="musicGenre">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="ROCK"/>
+                    <xs:enumeration value="SOUL"/>
+                    <xs:enumeration value="MATH_ROCK"/>
+                    <xs:enumeration value="POST_ROCK"/>
+                </xs:restriction>
+            </xs:simpleType>
         </xs:schema>
-    </types>
-
-    <portType name="GrammyPortType">
-        <operation name="AddSingle">
-            <input message="tns:AddSingleRequest"/>
-            <output message="tns:AddSingleResponse"/>
-        </operation>
-        <operation name="ChangeSingle">
-            <input message="tns:ChangeSingleRequest"/>
-            <output message="tns:ChangeSingleResponse"/>
-        </operation>
-        <operation name="AddParticipant">
-            <input message="tns:AddParticipantRequest"/>
-            <output message="tns:AddParticipantResponse"/>
-        </operation>
-    </portType>
-
-    <binding name="GrammyBinding" type="tns:GrammyPortType">
+    </wsdl:types>
+    <wsdl:message name="addParticipant">
+        <wsdl:part element="tns:addParticipant" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="changeSingleResponse">
+        <wsdl:part element="tns:changeSingleResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="addSingleResponse">
+        <wsdl:part element="tns:addSingleResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="addParticipantResponse">
+        <wsdl:part element="tns:addParticipantResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="changeSingle">
+        <wsdl:part element="tns:changeSingle" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="addSingle">
+        <wsdl:part element="tns:addSingle" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="GrammyService">
+        <wsdl:operation name="addParticipant">
+            <wsdl:input message="tns:addParticipant" name="addParticipant"> </wsdl:input>
+            <wsdl:output message="tns:addParticipantResponse" name="addParticipantResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="changeSingle">
+            <wsdl:input message="tns:changeSingle" name="changeSingle"> </wsdl:input>
+            <wsdl:output message="tns:changeSingleResponse" name="changeSingleResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="addSingle">
+            <wsdl:input message="tns:addSingle" name="addSingle"> </wsdl:input>
+            <wsdl:output message="tns:addSingleResponse" name="addSingleResponse"> </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="GrammyServiceSoapBinding" type="tns:GrammyService">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-        <operation name="AddSingle">
-            <soap:operation soapAction="http://itmo.ru/grammy/AddSingle"/>
-            <input>
+        <wsdl:operation name="addParticipant">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="addParticipant">
                 <soap:body use="literal"/>
-            </input>
-            <output>
+            </wsdl:input>
+            <wsdl:output name="addParticipantResponse">
                 <soap:body use="literal"/>
-            </output>
-        </operation>
-        <operation name="ChangeSingle">
-            <soap:operation soapAction="http://itmo.ru/grammy/ChangeSingle"/>
-            <input>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="changeSingle">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="changeSingle">
                 <soap:body use="literal"/>
-            </input>
-            <output>
+            </wsdl:input>
+            <wsdl:output name="changeSingleResponse">
                 <soap:body use="literal"/>
-            </output>
-        </operation>
-        <operation name="AddParticipant">
-            <soap:operation soapAction="http://itmo.ru/grammy/AddParticipant"/>
-            <input>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="addSingle">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="addSingle">
                 <soap:body use="literal"/>
-            </input>
-            <output>
+            </wsdl:input>
+            <wsdl:output name="addSingleResponse">
                 <soap:body use="literal"/>
-            </output>
-        </operation>
-    </binding>
-
-    <service name="GrammyService">
-        <port name="GrammyPort" binding="tns:GrammyBinding">
-            <soap:address location="http://localhost:8080/ws/grammy"/>
-        </port>
-    </service>
-</definitions>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="GrammyService">
+        <wsdl:port binding="tns:GrammyServiceSoapBinding" name="GrammyServicePort">
+            <soap:address location="https://localhost:8080/services/grammy"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
