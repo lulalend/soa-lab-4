@@ -2,9 +2,12 @@ spring:
   application:
     name: music-band
   datasource:
-    username: postgres
-    password: postgres
-    url: jdbc:postgresql://localhost:5432/postgres
+    username: s335045
+    password: 4CWCEUX8VkfrC7jk
+    url: jdbc:postgresql://localhost:5432/studs
+#    username: postgres
+#    password: postgres
+#    url: jdbc:postgresql://localhost:5432/postgres
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true

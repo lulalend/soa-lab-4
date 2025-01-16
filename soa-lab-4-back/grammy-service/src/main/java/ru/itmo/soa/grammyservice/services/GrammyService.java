@@ -1,16 +1,14 @@
 package ru.itmo.soa.grammyservice.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
-import ru.itmo.soa.grammyservice.exceptions.ErrorWithCode;
 import ru.itmo.soa.grammyservice.model.Band;
 import ru.itmo.soa.grammyservice.model.Person;
 import ru.itmo.soa.grammyservice.model.Single;
@@ -28,8 +26,8 @@ public class GrammyService {
     }
 
     public Band addSingle(
-            Long bandId,
-            Single single
+            @WebParam(name = "bandId") Long bandId,
+            @WebParam(name = "single") Single single
     ) {
         String url = String.format("https://localhost:1111/api/v1/bands/%d/singles", bandId);
 
@@ -38,32 +36,24 @@ public class GrammyService {
     }
 
     public Single changeSingle(
-            Long bandId,
-            Long singleId,
-            Single single
+            @WebParam(name = "bandId") Long bandId,
+            @WebParam(name = "singleId") Long singleId,
+            @WebParam(name = "single") Single single
     ) {
         String url = String.format("https://localhost:1111/api/v1/bands/%d/singles/%d", bandId, singleId);
 
-        try {
-            ResponseEntity<Single> response = restTemplate.exchange(
-                    url, HttpMethod.PUT, new HttpEntity<>(single), Single.class);
-            return response.getBody();
-        } catch (RestClientResponseException e) {
-            throw new RuntimeException("Failed to change single: " + e.getMessage(), e);
-        }
+        ResponseEntity<Single> response = restTemplate.exchange(
+                url, HttpMethod.PUT, new HttpEntity<>(single), Single.class);
+        return response.getBody();
     }
 
     public Person addParticipant(
-            Long bandId,
-            Person participant
+            @WebParam(name = "bandId") Long bandId,
+            @WebParam(name = "participant") Person participant
     ) {
         String url = String.format("https://localhost:1111/api/v1/bands/%d/participants", bandId);
 
-        try {
-            ResponseEntity<Person> response = restTemplate.postForEntity(url, participant, Person.class);
-            return response.getBody();
-        } catch (RestClientResponseException e) {
-            throw new RuntimeException("Failed to add participant: " + e.getMessage(), e);
-        }
+        ResponseEntity<Person> response = restTemplate.postForEntity(url, participant, Person.class);
+        return response.getBody();
     }
 }

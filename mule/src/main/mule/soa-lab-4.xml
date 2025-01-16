@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	  xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	  xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	  xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
+
+<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="3ebb70e2-f44b-41c9-ae46-e503550d2c30" >
+		<http:listener-connection protocol="HTTPS" host="localhost" port="1112" tlsContext="TLS_Context"/>
+<!--		<http:listener-connection protocol="HTTP" host="localhost" port="17328"/>-->
+	</http:listener-config>
+	<tls:context name="TLS_Context" doc:name="TLS Context" doc:id="7ba84d6b-0b09-4f45-a077-841a8f5011c6" >
+		<tls:trust-store insecure="true"/>
+<!--		<tls:key-store type="pkcs12" path="${mule.home}/apps/${app.name}/cert/server.keystore.p12" alias="main-server" keyPassword="DashaYana" password="DashaYana" />-->
+		<tls:key-store type="jks" path="${mule.home}/apps/${app.name}/cert/keystore.jks" alias="main-server" keyPassword="DashaYana" password="DashaYana" />
+	</tls:context>
+	<wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="d1dbc9be-492a-4023-937b-25f2ac8880f9" >
+		<wsc:connection wsdlLocation="${mule.home}/apps/${app.name}/wsdl/grammy.wsdl" service="GrammyService" port="GrammyServicePort" address="https://localhost:8080/services/grammy" />
+<!--		<wsc:connection wsdlLocation="${mule.home}/apps/${app.name}/wsdl/grammy.wsdl" service="GrammyService" port="GrammyServicePort" address="http://localhost:8080/services/grammy" />-->
+	</wsc:config>
+	<flow name="AddSingle" doc:id="23ce6689-04c9-43f8-8fc3-515901713fb3" >
+		<http:listener doc:name="Listener" doc:id="ea2162fc-82e2-43f0-af46-4052b625ef67" config-ref="HTTP_Listener_config" path="api/v1/grammy/band/{bandId}/singles/add" outputMimeType="application/json">
+			<http:response statusCode="201">
+				<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Access-Control-Allow-Origin" : "*",
+	"Access-Control-Allow-Methods" : "GET, PUT, POST, DELETE, HEAD, OPTIONS",
+	"Access-Control-Allow-Headers" : "*",
+	"Access-Control-Allow-Credentials" : "true"
+}]]]></http:headers>
+			</http:response>
+			<http:error-response statusCode="#[payload.code]">
+				<http:body ><![CDATA[#[payload]]]></http:body>
+			</http:error-response>
+		</http:listener>
+		<ee:transform doc:name="Transform Message" doc:id="0bbf4de1-5fd0-4754-9a0d-ea663cfbb62e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://services.grammyservice.soa.itmo.ru/
+---
+{
+	ns0#addSingle: {
+		bandId: attributes.uriParams.bandId,
+		single:{
+			name: payload.name
+		}
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Logger" doc:id="ee910357-b265-466f-9b56-c69068414cc9" message="payload"/>
+		<wsc:consume operation="addSingle" doc:name="Consume" doc:id="e8d23e38-c395-4cfa-a91f-d7394b1eefdc" config-ref="Web_Service_Consumer_Config"/>
+		<logger level="DEBUG" doc:name="Logger" doc:id="beb59373-998f-46d9-925b-b5d55bd74a0c" />
+		<ee:transform doc:name="Transform Message" doc:id="e806dfdf-c794-41d2-8e79-ae7d39df5d6c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+ns ns0 http://services.grammyservice.soa.itmo.ru/
+output application/json
+---
+payload.body.ns0#addSingleResponse.return]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Logger" doc:id="08c3940f-2b9a-4d9d-b0f6-c0eb223e642d" />
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="d29e1551-429d-438d-b278-2a0e0780917e" type="ANY">
+				<ee:transform doc:name="Transform Message" doc:id="28597aba-6fc6-4efd-a56e-47cb987e6055" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+var errorString = error.description
+var parts = errorString splitBy ":"
+var errorMessage = parts[0]
+var httpCode = parts[1]
+---
+{
+	code: httpCode,
+	message: errorMessage,
+}
+]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="f49b0d3c-1ea8-4e0e-8aea-b29958196846" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="ChangeSingle" doc:id="23ce6689-04c9-43f8-8fc3-515901713fb3" >
+		<http:listener doc:name="Listener" doc:id="ea2162fc-82e2-43f0-af46-4052b625ef67" config-ref="HTTP_Listener_config" path="api/v1/grammy/bands/{bandId}/singles/{singleId}">
+			<http:response >
+				<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Access-Control-Allow-Origin" : "*",
+	"Access-Control-Allow-Methods" : "GET, PUT, POST, DELETE, HEAD, OPTIONS",
+	"Access-Control-Allow-Headers" : "*",
+	"Access-Control-Allow-Credentials" : "true"
+}]]]></http:headers>
+			</http:response>
+			<http:error-response statusCode="#[payload.code]" >
+				<http:body ><![CDATA[#[payload]]]></http:body>
+			</http:error-response>
+		</http:listener>
+		<ee:transform doc:name="Transform Message" doc:id="39307ca9-bffc-4cda-a075-553d23c00b76" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://services.grammyservice.soa.itmo.ru/
+---
+{
+	ns0#changeSingle: {
+		bandId: attributes.uriParams.bandId,
+		singleId: attributes.uriParams.singleId,
+		single: {
+			name: payload.name
+		}
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Logger" doc:id="ee910357-b265-466f-9b56-c69068414cc9" />
+		<wsc:consume operation="changeSingle" doc:name="Consume" doc:id="e8d23e38-c395-4cfa-a91f-d7394b1eefdc" config-ref="Web_Service_Consumer_Config"/>
+		<logger level="DEBUG" doc:name="Logger" doc:id="378d0084-66ee-4ad4-a7f8-a26f7a65350b" message="SOAP Request: #[payload]"/>
+		<ee:transform doc:name="Transform Message" doc:id="09a9c118-998a-4988-b639-22a00c12e6e3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+ns ns0 http://services.grammyservice.soa.itmo.ru/
+output application/json
+---
+payload.body.ns0#changeSingleResponse.return]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Logger" doc:id="08c3940f-2b9a-4d9d-b0f6-c0eb223e642d" />
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="dd2db8bc-df26-4573-9eb5-9635ba635099" type="ANY" >
+				<ee:transform doc:name="Transform Message" doc:id="405b6a55-e9ab-4541-8cab-d3e39ab0704d" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+var errorString = error.description
+var parts = errorString splitBy ":"
+var errorMessage = parts[0]
+var httpCode = parts[1]
+---
+{
+	code: httpCode,
+	message: errorMessage,
+}
+]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="770d9a4d-4586-4f32-ab99-0c60cd4bd360" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+	<flow name="AddParticipant" doc:id="23ce6689-04c9-43f8-8fc3-515901713fb3" >
+		<http:listener doc:name="Listener" doc:id="ea2162fc-82e2-43f0-af46-4052b625ef67" config-ref="HTTP_Listener_config" path="api/v1/grammy/band/{bandId}/participants/add" outputMimeType="application/json">
+			<http:response statusCode="201">
+				<http:headers ><![CDATA[#[output application/java
+---
+{
+	"Access-Control-Allow-Origin" : "*",
+	"Access-Control-Allow-Methods" : "Value"
+}]]]></http:headers>
+			</http:response>
+			<http:error-response statusCode="#[payload.code]" >
+				<http:body ><![CDATA[#[payload]]]></http:body>
+			</http:error-response>
+		</http:listener>
+		<ee:transform doc:name="Transform Message" doc:id="39307ca9-bffc-4cda-a075-553d23c00b76" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://services.grammyservice.soa.itmo.ru/
+---
+{
+	ns0#addParticipant: {
+		bandId: attributes.uriParams.bandId,
+		participant: {
+			location: {
+				name: payload.location.name,
+				x: payload.location.x,
+				y: payload.location.y,
+				z: payload.location.z
+			},
+			name: payload.name,
+			passportID: payload.passportID
+		}
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Logger" doc:id="ee910357-b265-466f-9b56-c69068414cc9" />
+		<wsc:consume operation="addParticipant" doc:name="Consume" doc:id="e8d23e38-c395-4cfa-a91f-d7394b1eefdc" config-ref="Web_Service_Consumer_Config"/>
+		<logger level="DEBUG" doc:name="Logger" doc:id="577114af-fbe8-413e-b367-5980a5914789" />
+		<ee:transform doc:name="Transform Message" doc:id="09a9c118-998a-4988-b639-22a00c12e6e3" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+ns ns0 http://services.grammyservice.soa.itmo.ru/
+output application/json
+---
+payload.body.ns0#addParticipantResponse.return]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="DEBUG" doc:name="Logger" doc:id="08c3940f-2b9a-4d9d-b0f6-c0eb223e642d" />
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="80e329c1-d5f3-4109-b749-53e0e2b12f3b" type="ANY" >
+				<ee:transform doc:name="Transform Message" doc:id="7353cdd8-ea52-4ba0-8e9b-5bc1e9184aa8" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+var errorString = error.description
+var parts = errorString splitBy ":"
+var errorMessage = parts[0]
+var httpCode = parts[1]
+---
+{
+	code: httpCode,
+	message: errorMessage,
+}
+]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="7ef79bf8-d502-4456-8eb5-3cb98a50df38" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+</mule>
